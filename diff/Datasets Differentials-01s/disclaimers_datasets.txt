@@ -1,0 +1,7 @@
+These images are not owned by repository or personally me.
+
+Images are premade datasets from Kaggle.
+
+Original Sources:
+Knights, Bishops, Rooks: https://www.kaggle.com/datasets/anshulmehtakaggl/chess-pieces-detection-images-dataset
+Pawns: https://www.kaggle.com/datasets/niteshfre/chessman-image-dataset
