@@ -1,9 +1,8 @@
-//---------------------------------------------------------------------------//
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 #include <assert.h>
+#include <math.h>
 
 //---------------------------------------------------------------------------//
 
@@ -37,43 +36,100 @@ void createDataset(float dataset[CLASS_COUNT][EXAMPLES_PER_CLASS][IMAGE_SIZE][IM
 
 //---------------------------------------------------------------------------//
 
-int add(int a, int b)
+// Tanh aktivasyon fonksiyonu
+float tanh_activation(float x)
 {
-    return a + b;
+    return tanh(x);
 }
 
 //---------------------------------------------------------------------------//
 
-void test_add()
+// Matrisin transpozunu al
+void transpose(float *input, float *output, int rows, int cols)
 {
-    assert(add(2, 3) == 5);
-    assert(add(-1, 1) == 0);
-    assert(add(0, 0) == 0);
-    printf("All tests passed!\n");
+    for (int i = 0; i < rows; i++)
+    {
+        for (int j = 0; j < cols; j++)
+        {
+            output[j * rows + i] = input[i * cols + j];
+        }
+    }
+}
+
+//---------------------------------------------------------------------------//
+
+// Model için ağırlıklar ve giriş vektörü ile çıkışı hesapla
+float calculate_output(float *x, float *w, int input_size)
+{
+    float result = 0.0;
+    for (int i = 0; i < input_size; i++)
+    {
+        result += x[i] * w[i];
+    }
+    return tanh_activation(result);
+}
+
+//---------------------------------------------------------------------------//
+
+// Öğrenme oranı ve doğru etiketle ağırlıkları güncelle
+void update_weights(float *x, float *w, float learning_rate, float expected_output, float output, int input_size)
+{
+    float error = expected_output - output;
+    for (int i = 0; i < input_size; i++)
+    {
+        w[i] += learning_rate * error * x[i];
+    }
 }
 
 //---------------------------------------------------------------------------//
 
 int main()
 {
-    // Define dataset array
+    // Dataset tanımlanır
     float dataset[CLASS_COUNT][EXAMPLES_PER_CLASS][IMAGE_SIZE][IMAGE_SIZE];
 
-    // Seed random number generator
+    // Rastgelelik için
     srand(time(NULL));
 
-    // Create and normalize dataset
+    // Dataset doldurma
     createDataset(dataset);
 
-    // Example access to dataset
-    printf("Dataset example, Class 0, Example 0, Pixel (0,0): %f\n", dataset[0][0][0][0]);
-    printf("Dataset example, Class 0, Example 0, Pixel (0,0): %f\n", dataset[0][0][0][4]);
-    printf("Dataset example, Class 0, Example 0, Pixel (0,0): %f\n", dataset[0][0][10][10]);
+    // Example to flatten an image into a vector
+    float x[N * N];  // Flattened input vector
+    int input_size = N * N + 1;  // +1 for the bias term
 
-    // Run tests
-    test_add();
+    // Initialize weights with small random values
+    float w[input_size];
+    for (int i = 0; i < input_size; i++)
+    {
+        w[i] = (rand() % 2000 - 1000) / 1000.0;  // Random values between -1 and 1
+    }
+
+    // Training: example for one image
+    for (int epoch = 0; epoch < 1000; epoch++)
+    {
+        // Example image from class 0
+        for (int i = 0; i < IMAGE_SIZE; i++)
+        {
+            for (int j = 0; j < IMAGE_SIZE; j++)
+            {
+                x[i * IMAGE_SIZE + j] = dataset[0][0][i][j];  // Flatten the image
+            }
+        }
+        
+        // Add bias term
+        x[input_size - 1] = 1.0f;
+
+        // Calculate output for class 0 (expected output = 1)
+        float output = calculate_output(x, w, input_size);
+
+        // Update weights
+        float learning_rate = 0.01;
+        update_weights(x, w, learning_rate, 1.0f, output, input_size);
+    }
+
+    // Print a sample output
+    printf("Output for a sample image: %f\n", calculate_output(x, w, input_size));
 
     return 0;
 }
-
-//---------------------------------------------------------------------------//
