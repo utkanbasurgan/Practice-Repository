@@ -21,7 +21,7 @@ void matris_doldur(int *matris, int dikey, int yatay)
     }
 }
 
-void matris_goster(int *matris, int dikey, int yatay)
+void matris_gosterr(int *matris, int dikey, int yatay)
 {
     for (int i = 0; i < dikey; i++)
     {
