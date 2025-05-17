@@ -16,7 +16,7 @@ void matris_doldur(int *matris, int dikey, int yatay)
     
     for (int i = 0; i < dikey * yatay; i++)
     {
-        scanf("%d", &alinan_sayi);
+        scanf("%ds", &alinan_sayi);
         matris[i] = alinan_sayi;
     }
 }
