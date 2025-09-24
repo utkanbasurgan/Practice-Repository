@@ -1,8 +1,3 @@
-// 
-// Utkan Başurgan
-// 
-//--------------------
+Utkan Başurgan's "Practice-Repository"
 
-"Practice-Repository"
-
-//--------------------
+https://utkan.basurgan.com
